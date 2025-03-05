@@ -8,6 +8,11 @@ final router = GoRouter(
   initialLocation: '/first',
   routes: [
     GoRoute(path: "/first", builder: (context,state) => FirstView()),
-    GoRoute(path: "/second", builder: (context,state) => SecondView())
+    GoRoute(path: "/second", builder: (context,state)
+    {
+      final numbers = state.extra as List<int>;
+      return SecondView(numbers: numbers);
+    }
+    )
   ]
 );

@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class SecondView extends StatefulWidget {
-  const SecondView({super.key});
+  final List<int> numbers;
+
+  const SecondView({super.key, required this.numbers});
 
   @override
   State<SecondView> createState() => _SecondViewState();
@@ -11,7 +12,14 @@ class SecondView extends StatefulWidget {
 
 class _SecondViewState extends State<SecondView> {
   TextEditingController controller = TextEditingController();
-  List<String> list = ["1","2","3","4","5","6",];
+
+  List<int> numbers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    numbers = widget.numbers;
+  }
 
   void update(){
     setState(() {
@@ -26,7 +34,13 @@ class _SecondViewState extends State<SecondView> {
       body: Container(
         color: Color(0xFFFFFFFF),
         alignment: Alignment.center,
-        child: Text("wait a minuet.")
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(numbers[0].toString()),
+            Text(numbers[1].toString())
+          ],
+        )
       ),
     );
   }

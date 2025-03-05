@@ -15,7 +15,8 @@ class _FirstViewState extends State<FirstView> {
   String errorText = "";
   bool isRightPlayerCount = true;
   bool isRightFirstChipCount = true;
-
+  int playerCount = 0;
+  int firstChipCount = 0;
   @override
   void dispose() {
     playerCountController.dispose();
@@ -52,9 +53,11 @@ class _FirstViewState extends State<FirstView> {
 
       if (!isRightFirstChipCount || !isRightPlayerCount) {
         return;
+        playerCount = int.parse(playerCountController.text);
+        firstChipCount = int.parse(firstChipCountController.text);
       }
 
-      context.push('/second');
+      context.push('/second',extra: [playerCount,firstChipCount]);
     });
   }
 
