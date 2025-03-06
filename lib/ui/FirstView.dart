@@ -36,14 +36,14 @@ class _FirstViewState extends State<FirstView> {
       try {
         playerCount = int.parse(playerCountController.text);
       } on FormatException {
-        errorText = "올바른 수를 입력해주세요";
+        errorText = "Enter the correct number";
         isRightPlayerCount = false;
       }
 
       try {
         firstChipCount = int.parse(firstChipCountController.text);
       } on FormatException {
-        errorText = "올바른 수를 입력해주세요";
+        errorText = "Enter the correct number";
         isRightFirstChipCount = false;
       }
 
@@ -79,8 +79,7 @@ class _FirstViewState extends State<FirstView> {
                 controller: playerCountController,
                 keyboardType: TextInputType.number,
                 maxLines: 1,
-                maxLength: 1,
-                placeholder: "인원 수를 입력하시오.",
+                placeholder: "player count",
               ),
             ),
             const Padding(padding: EdgeInsets.all(8)),
@@ -93,8 +92,7 @@ class _FirstViewState extends State<FirstView> {
                 controller: firstChipCountController,
                 keyboardType: TextInputType.number,
                 maxLines: 1,
-                maxLength: 2,
-                placeholder: "최초 칩 개수를 입력하시오.",
+                placeholder: "first chip count",
               ),
             ),
             CupertinoButton(

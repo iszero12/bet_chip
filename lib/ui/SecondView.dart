@@ -1,6 +1,19 @@
-import 'dart:math';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+
+class Player{
+  late String name;
+  late int chip;
+  late bool isLive;
+  late int id;
+
+  int betting(int betChip){
+    chip -= betChip;
+    return betChip;
+  }
+}
+
 
 class SecondView extends StatefulWidget {
   final List<int> numbers;
@@ -23,7 +36,7 @@ class _SecondViewState extends State<SecondView> {
     numbers = widget.numbers;
 
     for (int i = 1; i < numbers[0] + 1 ; i++) {
-      members.add("$i번 플레이어");
+      members.add("${i}th player");
     }
   }
 
@@ -42,18 +55,46 @@ class _SecondViewState extends State<SecondView> {
       Container(
           color: Color(0xFFFFFFFF),
           alignment: Alignment.center,
-          child: Stack(
+          child: Column(
             children: [
-              Positioned(
-                left: 0,
-                right: 0,
-                height: 350,
-                bottom: 0,
-                child: ListView.builder(
-                  itemCount: members.length,
-                  itemBuilder: (BuildContext ctx, int idx) {
-                    return PlayerItem(members[idx]);
-                  },
+              Expanded(
+                flex: 4,
+                  child: Container()
+              ),
+              Expanded(
+                  flex: 6,
+                child: Column(
+                  children: [
+
+                    Expanded(
+                        flex: 1,
+                        child:
+                        Row(
+                          children: [
+                            Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0)),
+                            Expanded(
+                                flex: 8,
+                                child:
+                                CupertinoTextField()
+                            ),
+                            Expanded(
+                                flex: 2,
+                                child: CupertinoButton(child:Text('bet'),onPressed: (){})
+                            )
+                          ],
+                        )
+                    ),
+                    Expanded(
+                      flex: 7,
+                      child:
+                      ListView.builder(
+                        itemCount: members.length,
+                        itemBuilder: (BuildContext ctx, int idx) {
+                          return PlayerItem(members[idx]);
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               )
             ],
@@ -75,8 +116,8 @@ class PlayerItem extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: Colors.grey.withOpacity(0.3)),
-          bottom: BorderSide(color: Colors.grey.withOpacity(0.3))
+          top: BorderSide(color: Colors.grey.withValues(alpha: 0.3)),
+          bottom: BorderSide(color: Colors.grey.withValues(alpha: 0.3))
         )
       ),
       child:SizedBox(
@@ -90,9 +131,13 @@ class PlayerItem extends StatelessWidget {
                     textAlign: TextAlign.center,
                     player
                 ),
-              )
-              ,
-            )
+              ),
+            ),
+            Spacer(),
+
+            CupertinoButton(child: Text("go"), onPressed: (){
+              print("clicked");
+            })
           ],
         ),
       ),
