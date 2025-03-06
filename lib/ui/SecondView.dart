@@ -26,6 +26,21 @@ class Player{
   }
 }
 
+class Game{
+  int currentChips = 0;
+  int turn = 1;
+  late int livePlayer;
+
+  Game(this.livePlayer);
+
+  void nextTurn(){
+    turn +=1;
+  }
+  void betting(int chip){
+    currentChips += chip;
+  }
+}
+
 
 class SecondView extends StatefulWidget {
   final List<int> numbers;
@@ -42,22 +57,30 @@ class _SecondViewState extends State<SecondView> {
   List<int> numbers = [];
   List<Player> members = [];
   late int currentChip = 0;
+  late Game game;
 
   @override
   void initState() {
     super.initState();
     numbers = widget.numbers;
 
+
+
     for (int i = 1; i < numbers[0] + 1 ; i++) {
       members.add(
         Player("${i}th player",numbers[1],i)
       );
     }
+    game = Game(numbers[0]);
   }
+
+
+
 
 
   void update(){
     setState(() {
+
 
     });
   }
@@ -65,8 +88,13 @@ class _SecondViewState extends State<SecondView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(child:
+    return
+      (Scaffold(
+      body:
+      GestureDetector(
+        onTap: () => {FocusManager.instance.primaryFocus?.unfocus()},
+        child:
+          SafeArea(child:
       Container(
           color: Colors.white,
           alignment: Alignment.center,
@@ -89,7 +117,7 @@ class _SecondViewState extends State<SecondView> {
                             ),
                           ),
                           Text(
-                              currentChip.toString(),
+                              game.currentChips.toString(),
                             style: TextStyle(
                               fontSize: 50
                             ),
@@ -146,7 +174,9 @@ class _SecondViewState extends State<SecondView> {
           )
       )
       ),
-    );
+    )
+      )
+      );
   }
 }
 
@@ -169,20 +199,22 @@ class PlayerItem extends StatelessWidget {
         height: 60,
         child: Row(
           children: [
+            Padding(padding: EdgeInsets.fromLTRB(20, 0, 0,0 )),
             SizedBox(
               height: 100,
               child: Center(
                 child: Text(
                     textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: player.isLive ? Colors.black : Colors.red
+                    ),
                     player.name
                 ),
               ),
             ),
             Spacer(),
-
-            CupertinoButton(child: Text("go"), onPressed: (){
-              print("clicked");
-            })
+            Text(player.chip.toString()),
+            Padding(padding: EdgeInsets.fromLTRB(20, 0, 0,0 )),
           ],
         ),
       ),
