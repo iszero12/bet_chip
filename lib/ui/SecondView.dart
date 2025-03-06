@@ -28,10 +28,10 @@ class Player{
 
 class Game{
   int currentChips = 0;
-  int turn = 1;
-  late int livePlayer;
+  int turn = 0;
+  late List<int> livePlayers;
 
-  Game(this.livePlayer);
+  Game(this.livePlayers);
 
   void nextTurn(){
     turn +=1;
@@ -55,7 +55,7 @@ class _SecondViewState extends State<SecondView> {
   TextEditingController controller = TextEditingController();
 
   List<int> numbers = [];
-  List<Player> members = [];
+  List<Player> Players = [];
   late int currentChip = 0;
   late Game game;
 
@@ -67,21 +67,29 @@ class _SecondViewState extends State<SecondView> {
 
 
     for (int i = 1; i < numbers[0] + 1 ; i++) {
-      members.add(
+      Players.add(
         Player("${i}th player",numbers[1],i)
       );
     }
-    game = Game(numbers[0]);
+    game = Game(List.generate(10, (i) => i ));
   }
 
 
 
 
 
-  void update(){
+  void betting(int betChip){
     setState(() {
-
-
+      print(game.turn);
+    Players[game.livePlayers[game.turn]].chip -= betChip;
+    if (Players[game.livePlayers[game.turn]].chip < 0){
+      game.currentChips += Players[game.livePlayers[game.turn]].chip;
+      Players[game.livePlayers[game.turn]].isLive = false;
+      game.livePlayers.remove(game.livePlayers[game.turn]);
+    }
+    else{
+      game.currentChips += betChip;
+    }
     });
   }
 
@@ -106,7 +114,7 @@ class _SecondViewState extends State<SecondView> {
                     alignment: Alignment.center,
                     child: SizedBox(
                       width: 200,
-                      height: 150,
+                      height: 200,
                       child:
                       Column(
                         children: [
@@ -120,6 +128,15 @@ class _SecondViewState extends State<SecondView> {
                               game.currentChips.toString(),
                             style: TextStyle(
                               fontSize: 50
+                            ),
+                          ),
+                          Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 0)),
+                          Text("this turn"),
+                          Text(
+                              "${game.livePlayers[game.turn].toString()}th player",
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 20
                             ),
                           )
                         ],
@@ -152,7 +169,11 @@ class _SecondViewState extends State<SecondView> {
                             ),
                             Expanded(
                                 flex: 3,
-                                child: CupertinoButton(child:Text('bet'),onPressed: (){})
+                                child: CupertinoButton(child:Text('bet'),onPressed: (){
+                                  print(game.currentChips);
+                                  print(game.turn);
+                                  betting(10);
+                                })
                             )
                           ],
                         )
@@ -161,9 +182,9 @@ class _SecondViewState extends State<SecondView> {
                       flex: 7,
                       child:
                       ListView.builder(
-                        itemCount: members.length,
+                        itemCount: Players.length,
                         itemBuilder: (BuildContext ctx, int idx) {
-                          return PlayerItem(members[idx]);
+                          return PlayerItem(Players[idx]);
                         },
                       ),
                     ),
