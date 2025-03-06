@@ -72,15 +72,29 @@ class PlayerItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 100,
-      child: Row(
-        children: [
-          Text(
-            textAlign: TextAlign.center,
-              player
-          )
-        ],
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: Colors.grey.withOpacity(0.3)),
+          bottom: BorderSide(color: Colors.grey.withOpacity(0.3))
+        )
+      ),
+      child:SizedBox(
+        height: 60,
+        child: Row(
+          children: [
+            SizedBox(
+              height: 100,
+              child: Center(
+                child: Text(
+                    textAlign: TextAlign.center,
+                    player
+                ),
+              )
+              ,
+            )
+          ],
+        ),
       ),
     );
   }
