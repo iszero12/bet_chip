@@ -30,8 +30,8 @@ class _FirstViewState extends State<FirstView> {
       isRightFirstChipCount = true;
       errorText = "";
 
-      int? playerCount;
-      int? firstChipCount;
+      int playerCount = 0;
+      int firstChipCount = 0;
 
       try {
         playerCount = int.parse(playerCountController.text);
@@ -47,14 +47,8 @@ class _FirstViewState extends State<FirstView> {
         isRightFirstChipCount = false;
       }
 
-      print("Player Count: $playerCount, First Chip Count: $firstChipCount");
-      print("isRightFirstChipCount: $isRightFirstChipCount");
-      print("isRightPlayerCount: $isRightPlayerCount");
-
       if (!isRightFirstChipCount || !isRightPlayerCount) {
         return;
-        playerCount = int.parse(playerCountController.text);
-        firstChipCount = int.parse(firstChipCountController.text);
       }
 
       context.push('/second',extra: [playerCount,firstChipCount]);
