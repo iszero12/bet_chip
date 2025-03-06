@@ -5,12 +5,24 @@ import 'package:flutter/material.dart';
 class Player{
   late String name;
   late int chip;
-  late bool isLive;
+  late bool isLive = true;
   late int id;
 
+  Player(this.name, this.chip, this.id);
+
   int betting(int betChip){
-    chip -= betChip;
-    return betChip;
+    if(chip - betChip<0){
+      isLive = false;
+      return 0;
+    }
+    else{
+      chip -= betChip;
+      return betChip;
+    }
+
+  }
+  void die(){
+    isLive = false;
   }
 }
 
@@ -28,7 +40,7 @@ class _SecondViewState extends State<SecondView> {
   TextEditingController controller = TextEditingController();
 
   List<int> numbers = [];
-  List<String> members = [];
+  List<Player> members = [];
   late int currentChip = 0;
 
   @override
@@ -37,7 +49,9 @@ class _SecondViewState extends State<SecondView> {
     numbers = widget.numbers;
 
     for (int i = 1; i < numbers[0] + 1 ; i++) {
-      members.add("${i}th player");
+      members.add(
+        Player("${i}th player",numbers[1],i)
+      );
     }
   }
 
@@ -99,10 +113,17 @@ class _SecondViewState extends State<SecondView> {
                             Expanded(
                                 flex: 8,
                                 child:
-                                CupertinoTextField()
+                                CupertinoTextField(
+                                  placeholder: "Betting chip Count",
+                                )
                             ),
                             Expanded(
-                                flex: 2,
+                              flex: 3,
+                                child:
+                                CupertinoButton(child:Text('die'),onPressed: (){})
+                            ),
+                            Expanded(
+                                flex: 3,
                                 child: CupertinoButton(child:Text('bet'),onPressed: (){})
                             )
                           ],
@@ -133,7 +154,7 @@ class _SecondViewState extends State<SecondView> {
 class PlayerItem extends StatelessWidget {
   const PlayerItem(this.player,{super.key});
 
-  final String player;
+  final Player player;
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +174,7 @@ class PlayerItem extends StatelessWidget {
               child: Center(
                 child: Text(
                     textAlign: TextAlign.center,
-                    player
+                    player.name
                 ),
               ),
             ),
