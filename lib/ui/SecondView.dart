@@ -29,6 +29,7 @@ class _SecondViewState extends State<SecondView> {
 
   List<int> numbers = [];
   List<String> members = [];
+  late int currentChip = 0;
 
   @override
   void initState() {
@@ -53,13 +54,36 @@ class _SecondViewState extends State<SecondView> {
     return Scaffold(
       body: SafeArea(child:
       Container(
-          color: Color(0xFFFFFFFF),
+          color: Colors.white,
           alignment: Alignment.center,
           child: Column(
             children: [
               Expanded(
                 flex: 4,
-                  child: Container()
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: SizedBox(
+                      width: 200,
+                      height: 150,
+                      child:
+                      Column(
+                        children: [
+                          Text(
+                              "Current chips",
+                            style: TextStyle(
+                              fontSize: 30
+                            ),
+                          ),
+                          Text(
+                              currentChip.toString(),
+                            style: TextStyle(
+                              fontSize: 50
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
               ),
               Expanded(
                   flex: 6,
