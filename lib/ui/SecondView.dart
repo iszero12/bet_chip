@@ -102,11 +102,12 @@ class _SecondViewState extends State<SecondView> {
 
   void betting(int betChip){
     setState(() {
-      if (Players[game.turn].chip - betChip < 0){
+
+      if (Players[game.livePlayers[game.turn]].chip - betChip < 0){
         errorUpdate("The number of chips exceeds");
       }
       else{
-        Players[game.turn].chip -= betChip;
+        Players[game.livePlayers[game.turn]].chip -= betChip;
         game.currentChips += betChip;
         nextTurn();
       }
@@ -115,6 +116,8 @@ class _SecondViewState extends State<SecondView> {
   void die(){
     setState(() {
       Players[game.livePlayers[game.turn]].isLive = false;
+      game.livePlayers.removeAt(game.turn);
+      print(game.livePlayers);
     });
   }
 
@@ -209,7 +212,9 @@ class _SecondViewState extends State<SecondView> {
                             Expanded(
                               flex: 3,
                                 child:
-                                CupertinoButton(child:Text('die'),onPressed: (){})
+                                CupertinoButton(child:Text('die'),onPressed: (){
+                                  die();
+                                })
                             ),
                             Expanded(
                                 flex: 3,
