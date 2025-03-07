@@ -17,9 +17,11 @@ class Game{
   late List<int> livePlayers;
 
   Game(this.livePlayers);
+}
 
-  void nextTurn(){
-    turn +=1;
+extension StringExtensions on String {
+  int toInt() {
+    return int.parse(this);
   }
 }
 
@@ -34,11 +36,12 @@ class SecondView extends StatefulWidget {
 }
 
 class _SecondViewState extends State<SecondView> {
-  TextEditingController controller = TextEditingController();
+  TextEditingController betChipController = TextEditingController();
 
   List<int> numbers = [];
   List<Player> Players = [];
   late Game game;
+  String error = "";
 
   @override
   void initState() {
@@ -55,6 +58,11 @@ class _SecondViewState extends State<SecondView> {
     game = Game(List.generate(numbers[0], (i) => i ));
   }
 
+  bool isInt(String str) {
+    return int.tryParse(str) != null;
+  }
+
+
 
 
   void endCheck(){
@@ -62,6 +70,12 @@ class _SecondViewState extends State<SecondView> {
       if(game.livePlayers.length == 1){
         Players[game.livePlayers[0]].chip += game.currentChips;
       }
+    });
+  }
+
+  void resetError(){
+    setState(() {
+      error = "";
     });
   }
 
@@ -79,35 +93,36 @@ class _SecondViewState extends State<SecondView> {
     }
   }
 
+  void errorUpdate(String str){
+    setState(() {
+      error = str;
+    });
+  }
+
 
   void betting(int betChip){
     setState(() {
-    Players[game.livePlayers[game.turn]].chip -= betChip;
-    if (Players[game.livePlayers[game.turn]].chip < 0){
-      game.currentChips += Players[game.livePlayers[game.turn]].chip;
-      Players[game.livePlayers[game.turn]].isLive = false;
-      game.livePlayers.remove(game.livePlayers[game.turn]);
-      nextTurn();
-    }
-    else{
-      game.currentChips += betChip;
-      nextTurn();
-    }
+      if (Players[game.turn].chip - betChip < 0){
+        errorUpdate("The number of chips exceeds");
+      }
+      else{
+        Players[game.turn].chip -= betChip;
+        game.currentChips += betChip;
+        nextTurn();
+      }
     });
-
-
-    void die(){
-      setState(() {
+  }
+  void die(){
+    setState(() {
       Players[game.livePlayers[game.turn]].isLive = false;
-      });
-    }
+    });
+  }
 
-    void resetPlayers(){
-      setState(() {
+  void resetPlayers(){
+    setState(() {
       game.livePlayers.clear();
       game.livePlayers = List.generate(numbers[0], (i) => i );
-      });
-    }
+    });
   }
 
 
@@ -128,32 +143,39 @@ class _SecondViewState extends State<SecondView> {
               Expanded(
                 flex: 4,
                   child: Container(
-                    alignment: Alignment.center,
+                    alignment: Alignment.topCenter,
                     child: SizedBox(
-                      width: 200,
-                      height: 200,
+                      width: 400,
+                      height: 350,
                       child:
                       Column(
                         children: [
                           Text(
                               "Current chips",
                             style: TextStyle(
-                              fontSize: 30
+                              fontSize: 20
                             ),
                           ),
                           Text(
                               game.currentChips.toString(),
                             style: TextStyle(
-                              fontSize: 50
+                              fontSize: 40
                             ),
                           ),
-                          Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 0)),
+
                           Text("this turn"),
                           Text(
                               "${Players[game.turn].id.toString()}th player",
                             style: TextStyle(
                               color: Colors.grey,
-                              fontSize: 20
+                              fontSize: 15
+                            ),
+                          ),
+                          Padding(padding: EdgeInsets.fromLTRB(0, 5, 0, 0)),
+                          Text(
+                            error,
+                            style: TextStyle(
+                              color: Colors.red
                             ),
                           )
                         ],
@@ -176,6 +198,11 @@ class _SecondViewState extends State<SecondView> {
                                 flex: 8,
                                 child:
                                 CupertinoTextField(
+                                  keyboardType: TextInputType.number,
+                                    onChanged: (text) {
+                                      resetError();
+                                    },
+                                  controller: betChipController,
                                   placeholder: "Betting chip Count",
                                 )
                             ),
@@ -187,7 +214,12 @@ class _SecondViewState extends State<SecondView> {
                             Expanded(
                                 flex: 3,
                                 child: CupertinoButton(child:Text('bet'),onPressed: (){
-                                  betting(10);
+                                  if (isInt(betChipController.text)){
+                                    betting(betChipController.text.toInt());
+                                  }
+                                  else{
+                                    errorUpdate("Enter the correct number");
+                                  }
                                 })
                             )
                           ],
@@ -257,3 +289,4 @@ class PlayerItem extends StatelessWidget {
     );
   }
 }
+
