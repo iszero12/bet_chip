@@ -9,21 +9,6 @@ class Player{
   late int id;
 
   Player(this.name, this.chip, this.id);
-
-  int betting(int betChip){
-    if(chip - betChip<0){
-      isLive = false;
-      return 0;
-    }
-    else{
-      chip -= betChip;
-      return betChip;
-    }
-
-  }
-  void die(){
-    isLive = false;
-  }
 }
 
 class Game{
@@ -35,9 +20,6 @@ class Game{
 
   void nextTurn(){
     turn +=1;
-  }
-  void betting(int chip){
-    currentChips += chip;
   }
 }
 
@@ -56,7 +38,6 @@ class _SecondViewState extends State<SecondView> {
 
   List<int> numbers = [];
   List<Player> Players = [];
-  late int currentChip = 0;
   late Game game;
 
   @override
@@ -71,26 +52,62 @@ class _SecondViewState extends State<SecondView> {
         Player("${i}th player",numbers[1],i)
       );
     }
-    game = Game(List.generate(10, (i) => i ));
+    game = Game(List.generate(numbers[0], (i) => i ));
   }
 
 
 
+  void endCheck(){
+    setState(() {
+      if(game.livePlayers.length == 1){
+        Players[game.livePlayers[0]].chip += game.currentChips;
+      }
+    });
+  }
+
+  void nextTurn(){
+    print(game.turn);
+    if (game.turn == game.livePlayers.length - 1){
+      print("game.turn");
+      print(game.livePlayers);
+      print("max turn");
+      game.turn = 0;
+    }
+    else{
+      print("next turn");
+      game.turn +=1 ;
+    }
+  }
 
 
   void betting(int betChip){
     setState(() {
-      print(game.turn);
     Players[game.livePlayers[game.turn]].chip -= betChip;
     if (Players[game.livePlayers[game.turn]].chip < 0){
       game.currentChips += Players[game.livePlayers[game.turn]].chip;
       Players[game.livePlayers[game.turn]].isLive = false;
       game.livePlayers.remove(game.livePlayers[game.turn]);
+      nextTurn();
     }
     else{
       game.currentChips += betChip;
+      nextTurn();
     }
     });
+
+
+    void die(){
+      setState(() {
+      Players[game.livePlayers[game.turn]].isLive = false;
+      });
+    }
+
+    void resetPlayers(){
+      setState(() {
+      game.livePlayers.clear();
+      game.livePlayers = List.generate(numbers[0], (i) => i );
+      });
+    }
   }
 
 
@@ -133,7 +150,7 @@ class _SecondViewState extends State<SecondView> {
                           Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 0)),
                           Text("this turn"),
                           Text(
-                              "${game.livePlayers[game.turn].toString()}th player",
+                              "${Players[game.turn].id.toString()}th player",
                             style: TextStyle(
                               color: Colors.grey,
                               fontSize: 20
@@ -170,8 +187,6 @@ class _SecondViewState extends State<SecondView> {
                             Expanded(
                                 flex: 3,
                                 child: CupertinoButton(child:Text('bet'),onPressed: (){
-                                  print(game.currentChips);
-                                  print(game.turn);
                                   betting(10);
                                 })
                             )
